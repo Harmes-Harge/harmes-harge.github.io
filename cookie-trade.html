@@ -72,6 +72,87 @@ xhttp.send();
 
 <body onload="checkCookie()">
 
+<canvas id="myCanvas" width="800" height="400" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML canvas tag.</canvas>
+<script>
+/*
+me: i want to fill canvas with brush strokes in a 4*4 matrix but i get a single stroke; what is wrong with this script?
+```javaScript
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+
+// Create gradient
+var grd = ctx.createRadialGradient(75,50,5,90,60,100);
+grd.addColorStop(0,"red");
+grd.addColorStop(1,"white");
+
+let i, j;
+for (i = 0; i < 800; i += 200) {
+   for (j = 0; j < 400; j += 100) {
+  let y = i + 200;
+  let g = j + 100;
+// Fill with gradient
+ctx.fillStyle = grd;
+ctx.fillRect(i,j,y,g);
+  }
+}
+```
+kAI: The issue in your script is with how you are calculating the coordinates for filling the canvas. The fillRect method takes four parameters: x, y, width, and height. In your loop, you are incrementing i and j by 200 and 100 respectively, which results in a single large rectangle being drawn.
+To fill the canvas with brush strokes in a 4x4 matrix, you need to adjust your loop and fillRect parameters. Here's a revised version of your script:
+```javaScript
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+
+// Create gradient
+var grd = ctx.createRadialGradient(75, 50, 5, 90, 60, 100);
+grd.addColorStop(0, "red");
+grd.addColorStop(1, "white");
+
+let cellWidth = 200;
+let cellHeight = 100;
+
+for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+        let x = i * cellWidth;
+        let y = j * cellHeight;
+        // Fill with gradient
+        ctx.fillStyle = grd;
+        ctx.fillRect(x, y, cellWidth, cellHeight);
+    }
+}
+```
+me: i have the same lame result with your revision as with my original script --one stroke in top left corner
+kAI: I see the issue now. The problem lies in how you are defining the gradient and filling the canvas. You are creating a radial gradient that spans the entire canvas, so it appears as if only one large stroke is being drawn.
+To achieve a 4x4 matrix of brush strokes with different colors in each cell, you need to create a new gradient for each cell. Here's an updated version of your script:
+*/
+
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+
+let cellWidth = 200;
+let cellHeight = 100;
+
+for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+        // Create gradient for each cell
+        var grd = ctx.createRadialGradient(i * cellWidth + 50, j * cellHeight + 50, 5, i * cellWidth + 90, j * cellHeight + 60, 100);
+// better for a focus searching
+//        grd.addColorStop(0, "red");
+//        grd.addColorStop(1, "white");
+//better for a dark text
+grd.addColorStop(0,"lightblue");
+grd.addColorStop(0.3,"pink");
+grd.addColorStop(1,"lavender"); 
+        let x = i * cellWidth;
+        let y = j * cellHeight;
+
+        // Fill with gradient
+        ctx.fillStyle = grd;
+        ctx.fillRect(x, y, cellWidth, cellHeight);
+    }
+}
+</script>
+
 <h2>The cookie trade</h2>
 
 <div id="demo">
