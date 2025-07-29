@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function setCookie(cname,cvalue,exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  let expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+function checkCookie() {
+  let user = getCookie("username");
+  if (user != "") {
+    alert("Welcome again " + user);
+    document.getElementById("crumbs").innerHTML = "Your session is active";
+} else {
+     user = prompt("Please enter your name:","");
+     if (user != "" && user != null) {
+       setCookie("username", user, 30);
+     }
+  }
+}
+
+function shelfCookie() {
+  let user = getCookie("username");
+  let expiry = getCookie("expires");
+if (user != "") {
+    document.getElementById("showCookie").innerHTML =
+    "Artist: " +
+    user;
+  } else {
+     document.getElementById("showCookie").innerHTML = "Your shelf is empty!";
+     }
+}
+
+function deleteCookie() {
+  document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.getElementById("demo").innerHTML = "the cookie has expired";
+  shelfCookie();
+}
+
+const xhttp=new XMLHttpRequest();
+
+xhttp.onload = function() {
+  document.getElementById("full").innerHTML =
+  this.getAllResponseHeaders();
+  document.getElementById("demoCookie").innerHTML =
+  this.getResponseHeader("Last-Modified");
+}
+xhttp.open("GET", "index.html");
+xhttp.send();
+
+</script>
+</head>
+
+<body onload="checkCookie()">
+
+<h2>The cookie trade</h2>
+
+<div id="demo">
+<p>Let's dump our expired cookie</p>
+<button type="button" onclick="deleteCookie()">Forget Me</button>
+</div>
+
+<div id="showCookie">
+<p id="crumbs">You are not authorised</p>
+<button type="button" onclick="shelfCookie()">Open Me</button>
+</div>
+
+<pre id="full"></pre>
+
+<p>Last modified: <span id="demoCookie"></span></p>
+
+</body>
+
+</html>
